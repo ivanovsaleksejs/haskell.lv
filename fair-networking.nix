@@ -10,11 +10,11 @@
     defaultGateway6 = "";
     interfaces = {
       eth0 = {
-        ip4 = [
-          { address="206.189.16.166"; prefixLength=20; }
+        ipv4.addresses = [
+          { address = "206.189.16.166"; prefixLength = 24; }
         ];
-        ip6 = [
-          { address="fe80::6c44:bcff:fe7e:79a2"; prefixLength=64; }
+        ipv6.addresses = [
+          { address = "fe80::6c44:bcff:fe7e:79a2"; prefixLength = 24; }
         ];
       };
       
