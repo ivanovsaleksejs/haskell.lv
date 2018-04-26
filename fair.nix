@@ -4,8 +4,8 @@
   webserver = { config, pkgs, ... }:
     { 
       imports = [
-       ./fair-networking.nix # generated at runtime by nixos-infect
-       ./fair-users.nix
+       ./fair/networking.nix # generated at runtime by nixos-infect
+       ./fair/users.nix
       ];
 
       boot.cleanTmpDir = true;

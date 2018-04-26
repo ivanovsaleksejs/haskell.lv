@@ -1,2 +1,2 @@
 .envrc filter=git-crypt diff=git-crypt
-fair-state.json filter=git-crypt diff=git-crypt
+state.json filter=git-crypt diff=git-crypt
