@@ -6,5 +6,6 @@ buildEnv rec {
   buildInputs = [
     nixops
     git-crypt
+    openvpn
   ];
 }
