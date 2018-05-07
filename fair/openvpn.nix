@@ -6,11 +6,22 @@
 # https://openvpn.net/index.php/open-source/documentation/howto.html#examples
 
 let
-  # generate via openvpn --genkey --secret your.key
-  secret = builtins.readFile ../secrets/fair-openvpn.key;
-  secret-path = "/root/openvpn.key";
+  keydir = "/root";
 
-  domain = "vpn.localhost.localdomain";
+  keys = builtins.listToAttrs (map (f: {
+    name = baseNameOf f;
+    value = {
+      text = builtins.readFile f;
+    };
+  }) keyfiles);
+
+  keyfiles = [
+    ../secrets/pki/ca.crt
+    ../secrets/pki/issued/server.crt
+    ../secrets/pki/private/server.key
+    ../secrets/pki/dh.pem
+  ];
+
   vpn-dev = "tun0";
   port = 1194;
 in {
@@ -23,17 +34,25 @@ in {
   networking.firewall.trustedInterfaces = [ vpn-dev ];
   networking.firewall.allowedUDPPorts = [ port ];
 
-  deployment.keys.openvpn.text = secret;
-  systemd.services.nixops-keys.postStart = "cp /run/keys/openvpn ${secret-path}";
-  systemd.services.nixops-keys.wantedBy = [ "keys.target" ];
+  deployment.keys = keys;
+
+  systemd.services.nixops-keys.postStart = "cp /run/keys/* ${keydir}/";
   systemd.services.openvpn-fair.after = [ "nixops-keys.service" ];
 
   services.openvpn.servers.fair.config = ''
     dev ${vpn-dev}
     proto udp
-    ifconfig 10.8.0.1 10.8.0.2
-    secret ${secret-path}
     port ${toString port}
+
+    mode server
+    topology subnet
+    server 10.8.0.0 255.255.255.0
+    client-to-client
+
+    ca ${keydir}/ca.crt
+    cert ${keydir}/server.crt
+    key ${keydir}/server.key
+    dh ${keydir}/dh.pem
 
     cipher AES-256-CBC
     auth-nocache

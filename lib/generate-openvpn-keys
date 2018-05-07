@@ -1,0 +1,32 @@
+#!/usr/bin/env  bash
+
+set -e
+
+cd "$(dirname "$0")/../secrets"
+
+er="$(which easyrsa)"
+ran=0
+easyrsa() {
+    ran=1
+    "$er" "$@"
+}
+
+ifexists() {
+    if ! [ -e "$1" ]; then
+        shift
+        "$@"
+    fi
+}
+
+keys() {
+    ifexists pki                    easyrsa init-pki
+    ifexists pki/private/ca.key     easyrsa build-ca nopass
+    ifexists pki/dh.pem             easyrsa gen-dh
+    ifexists pki/private/server.key easyrsa build-server-full server nopass
+}
+
+keys
+
+if [ "$ran" -eq 0 ]; then
+    echo "everything's generated already"
+fi

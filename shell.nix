@@ -9,5 +9,6 @@ buildEnv rec {
     nixops
     git-crypt
     openvpn
+    easyrsa
   ];
 }

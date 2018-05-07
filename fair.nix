@@ -5,6 +5,7 @@
     {
       imports = [
        ./fair/networking.nix # generated at runtime by nixos-infect
+       ./fair/openvpn.nix
        ./fair/users.nix
        ./fair/packages.nix
       ];
