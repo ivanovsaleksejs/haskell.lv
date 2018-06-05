@@ -13,6 +13,7 @@
       boot.cleanTmpDir = true;
       networking.hostName = "NixOS";
       networking.firewall.allowPing = true;
+      networking.firewall.allowedTCPPorts = [ 64550 ];
 
       programs.zsh.enable = true;
 
@@ -21,6 +22,7 @@
         openssh = {
           enable = true;
           permitRootLogin = "yes";
+          gatewayPorts = "yes";
         };
       };
 
